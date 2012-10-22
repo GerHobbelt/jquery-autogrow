@@ -1,19 +1,26 @@
 /* 
- * Auto Expanding Text Area (2.0.0)
- * by Chrys Bader (www.chrysbader.com) - chrysb@gmail.com
- * and Jakub Zelenka (www.bukka.eu) - jakub.zelenka@gmail.com
- *
- * Special thanks to:
- * Jake Chapa - jake@hybridstudio.com
- * John Resig - jeresig@gmail.com
+ * jQuery Auto Expanding Text Area (2.0.0)
+ * https://github.com/bukka/jquery-autogrow
  *
  * Copyright (c) 2008 - 2011 Chrys Bader (www.chrysbader.com)
- * Copyright (c) 2012 Chrys Bader & Jakub Zelenka
- *
- * Licensed under the GPL (GPL-LICENSE.txt) license. 
- *
+ * Copyright (c) 2012 Chrys Bader (www.chrysbader.com) & Jakub Zelenka (www.bukka.eu)
  *
  * NOTE: This script requires jQuery to work.  Download jQuery at www.jquery.com
+ *
+ * Licensed under the GPL (GPL-LICENSE.txt) license.
+
+ * This jQuery Auto Expanding Text Area plugin is free software; you can redistribute
+ * it and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This plugin is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this plugin; if not, see <http://www.gnu.org/licenses/>.
  *
  */
  
@@ -30,7 +37,7 @@
 			this.each( function() {
 				// get textarea
 				var $textarea = $( this );
-				
+
 				// merge default and supplied options
 				var options = $.extend({
 					lineHeight: parseInt( $textarea.css( 'line-height' ) ),
@@ -39,13 +46,12 @@
 					expandCallback: function() {}
 				}, o );
 				
-				if ( $.browser.msie && isNaN( options.line_height ) ) {
-					// set the line height for IE
+				if ( isNaN( options.line_height )) {
 					$textarea.css( 'line-height', '100%' );
 					options.lineHeight = parseInt( $textarea.css( 'line-height' ) );
 				}
 				// save settings
-				$textareay.data( 'autogrow', {
+				$textarea.data( 'autogrow', {
 					options: options,
 					dummy: null
 				});
@@ -67,7 +73,7 @@
 			return this.each( function() {
 				$( this ).unbind( '.autogrow' );
 			});
-		}
+		},
 
 		// update 
 		update: function() {
@@ -88,7 +94,7 @@
 							'padding-right' : $textarea.css( 'padding-right' ),
 							'padding-bottom': $textarea.css( 'padding-bottom' ),
 							'padding-left'  : $textarea.css( 'padding-left' ),
-							'line-height'   : $line_height + 'px',
+							'line-height'   : settings.options.lineHeight + 'px',
 							'overflow-x'    : 'hidden',
 							'position'      : 'absolute',
 							'top'           : 0,
@@ -117,7 +123,7 @@
 				{
 					html = html.replace( /\n/g, '<br>new' );
 				}
-
+				
 				// Grow if the text has been updated or textarea resized
 				if ( dummy.html() != html || dummyWidth != textareaWidth )
 				{
@@ -131,8 +137,8 @@
 					else
 					{
 						$textarea.css( 'overflow-y', 'hidden' );
-						if ( $textarea.height() < dummy.height() + options.lineHeight || ( dummy.height() < $textarea.height() ) )
-						{	
+						if ( $textarea.height() < dummy.height() + options.lineHeight || $textarea.height() > dummy.height() )
+						{
 							$textarea.animate( { height: (dummy.height() + options.lineHeight) + 'px'}, 100 );	
 						}
 					}
