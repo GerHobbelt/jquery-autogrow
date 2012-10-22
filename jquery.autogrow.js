@@ -72,7 +72,7 @@
 
 				// bind keyup event and set default styles
 				$textarea
-					.css({ overflow: 'hidden', display: 'block' })
+					.css({ overflow: 'hidden' })
 					.bind( 'keyup.autogrow, change.autogrow', function() {
 						methods.update.apply( $textarea );
 					});
