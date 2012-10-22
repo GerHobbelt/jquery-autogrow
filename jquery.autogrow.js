@@ -7,9 +7,8 @@
  *
  * NOTE: This script requires jQuery to work.  Download jQuery at www.jquery.com
  *
- * Licensed under the GPL (GPL-LICENSE.txt) license.
-
- * This jQuery Auto Expanding Text Area plugin is free software; you can redistribute
+ *
+ * This jQuery plugin is free software; you can redistribute
  * it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either
  * version 3 of the License, or (at your option) any later version.
@@ -38,18 +37,33 @@
 				// get textarea
 				var $textarea = $( this );
 
+				// get default size
+				function getDefaultSize(property, usePercent) {
+					var value = parseInt( $textarea.css( property ) );
+					if ( isNaN( value ) && usePercent ) {
+						$textarea.css( property, '100%' );
+						value = parseInt( $textarea.css( property ) );
+					}
+					return isNaN( value ) ? 0 : value;
+				}
+
 				// merge default and supplied options
 				var options = $.extend({
-					lineHeight: parseInt( $textarea.css( 'line-height' ) ),
-					minHeight:  parseInt( $textarea.css( 'min-height' ) ),
-					maxHeight:  parseInt( $textarea.css( 'max-height' ) ),
+					lineHeight: getDefaultSize( 'line-height', true ),
+					minHeight:  getDefaultSize( 'min-height' ),
+					maxHeight:  getDefaultSize( 'max-height' ),
 					expandCallback: function() {}
 				}, o );
-				
-				if ( isNaN( options.line_height )) {
-					$textarea.css( 'line-height', '100%' );
-					options.lineHeight = parseInt( $textarea.css( 'line-height' ) );
+
+				var textareaHeight = $textarea.height();
+				if ( options.minHeight > textareaHeight ) {
+					$textarea.height(options.minHeight);
 				}
+				if ( options.maxHeight > 0 && options.maxHeight < textareaHeight ) {
+					$textarea.height(options.maxHeight);
+				}
+					
+				
 				// save settings
 				$textarea.data( 'autogrow', {
 					options: options,
@@ -59,7 +73,7 @@
 				// bind keyup event and set default styles
 				$textarea
 					.css({ overflow: 'hidden', display: 'block' })
-					.bind( 'keyup.autogrow', function() {
+					.bind( 'keyup.autogrow, change.autogrow', function() {
 						methods.update.apply( $textarea );
 					});
 			});
@@ -130,16 +144,18 @@
 					dummy.html( html );		      // update dummy content
 					dummy.width( textareaWidth ); // update dummy width to match
 					
-					if ( options.maxHeight > 0 && (dummy.height() + options.lineHeight > options.maxHeight) )
+					if ( options.maxHeight > 0 && ( dummy.height() + options.lineHeight > options.maxHeight ) )
 					{
 						$textarea.css( 'overflow-y', 'auto' );	
 					}
 					else
 					{
+						var requiredHeight =  Math.max(dummy.height(), options.minHeight);
 						$textarea.css( 'overflow-y', 'hidden' );
-						if ( $textarea.height() < dummy.height() + options.lineHeight || $textarea.height() > dummy.height() )
+						
+						if ( $textarea.height() < requiredHeight + options.lineHeight || $textarea.height() > requiredHeight )
 						{
-							$textarea.animate( { height: (dummy.height() + options.lineHeight) + 'px'}, 100 );	
+							$textarea.animate( { height: ( requiredHeight + options.lineHeight ) + 'px'}, 100 );	
 						}
 					}
 				}

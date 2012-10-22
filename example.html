@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html>
-  <head>
+	<head>
 	<title>jQuery Autogrow example</title>
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 	<script type="text/javascript" src="jquery.autogrow.js"></script>
 	<script type="text/javascript">
 	  $(document).ready(function() {
-	    $('#ag-textarea').autogrow();
+	    $('#ag-textarea').autogrow({
+			minHeight:80,
+			maxHeight:200
+	    });
 	  });
 	</script>
   </head>
